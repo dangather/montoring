@@ -5,7 +5,7 @@ load_dotenv()
 from threading import Thread
 import json
 import subprocess as sp
-from supabase import create_client, Client
+from supabase import create_client
 from datetime import datetime, timedelta
 
 url = os.environ.get("URL")
@@ -85,8 +85,8 @@ def main():
 
 
 if __name__ == "__main__":
-    updatedtime = str(datetime.now()+timedelta(seconds=10))
-    update = s.update({"scheduled_time": updatedtime}).eq("id", 1).execute()
+    updatedtime = datetime.now()+timedelta(seconds=10)
+    update = s.update({"scheduled_time": str(updatedtime)}).eq('id', 1).execute()
     time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
     if update:
         print("updated schedule!")
