@@ -39,17 +39,15 @@ class test:
         for i,e in enumerate(d):
             d[i] = e.decode("utf-8")
         for i in d:
-            if "Reply" in i:
+            if condition in i:
                 flag = True
                 break
             else:
                 flag = False
-
         if flag:
             plog("success!")
         else:
             nlog(f"failure: {d}")
-
         if elapsed < ee:
             print(f"[+] finished {ee-elapsed}s earlier than expected!")
         elif elapsed > ee:
@@ -57,13 +55,23 @@ class test:
         else:
             print(f"[+] finished on time!")
 
-command = "ping 212.188.157.218 /n 1"
 
-name = json.loads(s.select("name").execute().json())["data"][0]["name"]
-time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
-print(time)
-expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
 
-ping = test(name,time,expected_elapsed)
-ping.run(command, expected_elapsed, "Reply")
+def main():
+    tests = []
+    idd = []
+    try:
+        for i in json.loads(s.select("id").execute().json())["data"]:
+            idd.append(i["id"])
+        time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+        expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
+        ping = test("ping", time,expected_elapsed)
+        tests.append([time, expected_elapsed])
+        ping.run("ping 212.188.157.218 /n 1", expected_elapsed, "Reply")
+    except Exception as e:
+        print("error:", e)
 
+
+
+if __name__ == "__main__":
+    main()
