@@ -1,12 +1,12 @@
 import os
-from time import perf_counter as pc
+from time import perf_counter as pc, sleep
 from dotenv import load_dotenv
 load_dotenv()
 from threading import Thread
 import json
 import subprocess as sp
 from supabase import create_client, Client
-from datetime import datetime
+from datetime import datetime, timedelta
 
 url = os.environ.get("URL")
 key = os.environ.get("KEY")
@@ -56,22 +56,39 @@ class test:
             print(f"[+] finished on time!")
 
 
-
 def main():
-    tests = []
-    idd = []
-    try:
-        for i in json.loads(s.select("id").execute().json())["data"]:
-            idd.append(i["id"])
-        time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
-        expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
-        ping = test("ping", time,expected_elapsed)
-        tests.append([time, expected_elapsed])
-        ping.run("ping 212.188.157.218 /n 1", expected_elapsed, "Reply")
-    except Exception as e:
-        print("error:", e)
+    plog("starting up monitoring system")
+    time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+    while True:
+        current = datetime.now().strftime("%H:%M:%S")
+        print(current, time)
+        if str(current) == str(time):
+            tests = []
+            idd = []
+          
+            for i in json.loads(s.select("id").execute().json())["data"]:
+                idd.append(i["id"])
+            
+            expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
+            ping = test("ping", time,expected_elapsed)
+            tests.append([time, expected_elapsed])
+            ping.run("ping 212.188.157.218 /n 2", expected_elapsed, "Reply")
+            update = s.update({"scheduled_time", str(datetime.now()+timedelta(seconds=10))}).eq("id", 0).execute()
+            time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+            if update:
+                print("updated schedule!")
+            else:
+                print("failed")
+        sleep(1)
+        
 
 
 
 if __name__ == "__main__":
-    main()
+    updatedtime = str(datetime.now()+timedelta(seconds=10))
+    update = s.update({"scheduled_time": updatedtime}).eq("id", 1).execute()
+    time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+    if update:
+        print("updated schedule!")
+    else:
+        print("failed")
