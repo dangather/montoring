@@ -86,9 +86,10 @@ def main():
 
 if __name__ == "__main__":
     updatedtime = datetime.now()+timedelta(seconds=10)
-    update = s.update({"scheduled_time": str(updatedtime)}).eq('id', 1).execute()
+    update = sb.table("schedule").update({"scheduled_time": str(updatedtime)}).eq('id', 1)
     time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+    update.execute()
     if update:
         print("updated schedule!")
     else:
-        print("failed")
+        print("L")
