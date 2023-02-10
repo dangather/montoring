@@ -36,14 +36,19 @@ class test:
         round(float(ee),3)
         round(elapsed,3)
         print(f"[+] done! operation finished in {elapsed}s")
-        s = []
+        for i,e in enumerate(d):
+            d[i] = e.decode("utf-8")
         for i in d:
-            s.append(i.decode("utf-8"))
-        if condition in d:
+            if "Reply" in i:
+                flag = True
+                break
+            else:
+                flag = False
+
+        if flag:
             plog("success!")
         else:
-            nlog("failure.")
-            print(d)
+            nlog(f"failure: {d}")
 
         if elapsed < ee:
             print(f"[+] finished {ee-elapsed}s earlier than expected!")
@@ -55,10 +60,10 @@ class test:
 command = "ping 212.188.157.218 /n 1"
 
 name = json.loads(s.select("name").execute().json())["data"][0]["name"]
-time = s.select("scheduled_time").execute()
+time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
+print(time)
 expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
 
 ping = test(name,time,expected_elapsed)
 ping.run(command, expected_elapsed, "Reply")
-
 
