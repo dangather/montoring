@@ -55,6 +55,19 @@ class test:
         else:
             print(f"[+] finished on time!")
 
+def updateschedule():
+    updatedtime = str(datetime.strftime(datetime.now()+timedelta(seconds=10), "%H:%M:%S"))
+    try:
+        sb.table("schedule").update({"scheduled_time": updatedtime}).eq("id", 1).execute()
+        sleep(0.5)
+    except json.decoder.JSONDecodeError:
+        plog("updated schedule!")
+    except:
+        nlog("an error occured")
+
+def fetch(selector, i, specific):
+    data = json.loads(s.select(selector).execute().json())["data"][i][specific]
+    return data
 
 def main():
     plog("starting up monitoring system")
@@ -72,24 +85,13 @@ def main():
             expected_elapsed = json.loads(s.select("expected_elapsed").execute().json())["data"][0]["expected_elapsed"]
             ping = test("ping", time,expected_elapsed)
             tests.append([time, expected_elapsed])
-            ping.run("ping 212.188.157.218 /n 2", expected_elapsed, "Reply")
-            update = s.update({"scheduled_time", str(datetime.now()+timedelta(seconds=10))}).eq("id", 0).execute()
+            ping.run(json.loads(s.select("command").execute().json())["data"][0]["command"], expected_elapsed, "Reply")
+            updateschedule()
             time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
-            if update:
-                print("updated schedule!")
-            else:
-                print("failed")
         sleep(1)
         
 
 
 
 if __name__ == "__main__":
-    updatedtime = datetime.now()+timedelta(seconds=10)
-    update = sb.table("schedule").update({"scheduled_time": str(updatedtime)}).eq('id', 1)
-    time = datetime.strptime(json.loads(s.select("scheduled_time").execute().json())["data"][0]["scheduled_time"], "%H:%M:%S").time()
-    update.execute()
-    if update:
-        print("updated schedule!")
-    else:
-        print("L")
+    print(fetch("command", 0, "command"))
