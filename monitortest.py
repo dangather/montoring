@@ -7,6 +7,9 @@ import json
 import subprocess as sp
 from supabase import create_client
 from datetime import datetime, timedelta
+from colorama import init, Fore, Back, Style
+
+init()
 
 # ========= important variables =========
 url = os.environ.get("URL")
@@ -38,19 +41,19 @@ advice
 
 # positive logs
 def plog(s):
-    print(f"[+] [{datetime.now()}] {s}")
+    print(f"{Fore.GREEN}[+] [{datetime.now()}]{Style.RESET_ALL} {s}")
 
 # negative logs
 def nlog(s):
-    print(f"[-] [{datetime.now()}] {s}")
+    print(f"{Fore.RED}[-] [{datetime.now()}]{Style.RESET_ALL} {s}")
 
 # mid logs
 def mlog(s):
-    print(f"[~] [{datetime.now()}] {s}")    
+    print(f"{Fore.YELLOW}[~] [{datetime.now()}]{Style.RESET_ALL} {s}")    
 
 # custom log
 def clog(i, s):
-    return f"[{i}] {s}"
+    return f"{Fore.MAGENTA}[{i}]{Style.RESET_ALL} {s}"
 
 # ========= Task class =========
 
@@ -107,10 +110,10 @@ class Task:
 def updateschedule(i, r):
     try:
         plog(clog(getdata(s, "name", "id", r), "currently updating schedule"))
-        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(minutes=i), "%H:%M:%S"))}).eq("id", r).execute()
+        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=i), "%H:%M:%S"))}).eq("id", r).execute()
     # json decode means server is up
     except json.decoder.JSONDecodeError:
-        plog(clog(getdata(s, "name", "id", r), f"added {i} minutes to schedule"))
+        plog(clog(getdata(s, "name", "id", r), f"added {i} seconds to schedule"))
         sleep(0.5)
     except Exception as e:
         nlog(f"an error occured: {e}")
@@ -124,20 +127,32 @@ def fetch(table, selector):
 def getdata(table, selector, what, where):
     return json.loads(table.select(selector).eq(what, where).execute().json())["data"][0][selector]
 
-def gettimes():
-    times = fetch(s, "scheduled_time")
-    return times
-
 # thread 1 - first two commands
 def t1(scope):
-    print(scope)
-    for f in range(len(scope)):
-        task = Task(getdata(s, "name", "command", scope[f]), getdata(s, "expected_elapsed", "command", scope[f]))
-        task.run(scope[f], getdata(s, "pass_condition", "command", scope[f]))
+    threads = []
+    for i in range(len(scope)):
+        thread = Thread(target=threadrun, args=[scope[i]])
+        threads.append(thread)
+    for i in threads:
+        i.start()
 
-# main
-def main():
-    mlog("starting the monitoring system...")
+def threadrun(scope):
+    try:
+        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=30), "%H:%M:%S"))}).eq("command", scope).execute()
+    except json.decoder.JSONDecodeError:
+        time = getdata(s, "scheduled_time", "command", scope)
+        while True:
+            now = datetime.now().strftime("%H:%M:%S")
+            if now == time:
+                task = Task(getdata(s, "name", "command", scope), getdata(s, "expected_elapsed", "command", scope))
+                task.run(scope, getdata(s, "pass_condition", "command", scope))
+                time = getdata(s, "scheduled_time", "command", scope)
+            else:
+                sleep(1)
+    except KeyboardInterrupt:
+        exit()
+
+def getcommands():
     commands = fetch(s, "command") # fetch commands
     global tasks
     tasks = []
@@ -147,16 +162,26 @@ def main():
     split = 2
     for i in range(0, len(tasks), split):
         taskssplit.append(tasks[i:(i+split)])
-    
-    # start threads
-    threads = []
+    return taskssplit
 
-    for i in range(len(taskssplit)):
-        thread = Thread(target=t1, args=[taskssplit[i]])
-        threads.append(thread)
-    print(threads)
-    for i in threads:
-        i.start()
+# main
+def main():
+    try:
+        mlog("starting the monitoring system...")
+        taskssplit = getcommands()
 
+        # start threads
+        threads = []
+        for i in range(len(taskssplit)):
+            thread = Thread(target=t1, args=[taskssplit[i]])
+            threads.append(thread)
+        for i in threads:
+            i.start()
+        mlog("monitoring...")
+    except KeyboardInterrupt:
+        exit()
+    except Exception as e:
+        print(f"there was an error: {e}")
+        
 if __name__ == "__main__":
     main()
