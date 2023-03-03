@@ -13,7 +13,7 @@ url = os.environ.get("URL")
 key = os.environ.get("KEY")
 sb = create_client(url, key)
 s = sb.table("schedule")
-
+l = sb.table("logs")
 # ========= log types =========
 
 # positive logs
@@ -82,37 +82,37 @@ class Task:
 # r is id to update
 def updateschedule(i, r):
     try:
-        plog(clog(getdata("name", "id", r), "currently updating schedule"))
+        plog(clog(getdata(s, "name", "id", r), "currently updating schedule"))
         sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(minutes=i), "%H:%M:%S"))}).eq("id", r).execute()
     # json decode means server is up
     except json.decoder.JSONDecodeError:
-        plog(clog(getdata("name", "id", r), f"added {i} minutes to schedule"))
-        plog(clog(getdata("name", "id", r), "updated schedule"))
+        plog(clog(getdata(s, "name", "id", r), f"added {i} minutes to schedule"))
+        plog(clog(getdata(s, "name", "id", r), "updated schedule"))
         sleep(0.5)
     except Exception as e:
         nlog(f"an error occured: {e}")
 
 # get general data
-def fetch(selector):
-    data = json.loads(s.select(selector).order("id").execute().json())["data"]
+def fetch(table, selector):
+    data = json.loads(table.select(selector).order("id").execute().json())["data"]
     return data
 
 # get specific data using specific filters
-def getdata(selector, what, where):
-    return json.loads(s.select(selector).eq(what, where).execute().json())["data"][0][selector]
+def getdata(table, selector, what, where):
+    return json.loads(table.select(selector).eq(what, where).execute().json())["data"][0][selector]
 
 # thread 1 - first two commands
 def t1(scope):
     print(scope)
     for f in range(len(scope)):
-        task = Task(getdata("name", "command", scope[f]), getdata("expected_elapsed", "command", scope[f]))
-        task.run(scope[f], getdata("pass_condition", "command", scope[f]))
-        updateschedule(int(getdata("interval", "command", scope[f])), int(getdata("id", "command", scope[f])))
+        task = Task(getdata(s, "name", "command", scope[f]), getdata(s, "expected_elapsed", "command", scope[f]))
+        task.run(scope[f], getdata(s, "pass_condition", "command", scope[f]))
+        updateschedule(int(getdata(s, "interval", "command", scope[f])), int(getdata(s, "id", "command", scope[f])))
 
 # main
 def main():
     mlog("starting the monitoring system...")
-    commands = fetch("command") # fetch commands
+    commands = fetch(s, "command") # fetch commands
     global tasks
     tasks = []
     for i in commands:
