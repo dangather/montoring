@@ -8,12 +8,32 @@ import subprocess as sp
 from supabase import create_client
 from datetime import datetime, timedelta
 
-# important variables
+# ========= important variables =========
 url = os.environ.get("URL")
 key = os.environ.get("KEY")
 sb = create_client(url, key)
 s = sb.table("schedule")
+'''
+FIELDS
+id
+name
+scheduled_time
+expected_elapsed
+command
+interval
+pass_condition
+'''
+
+
 l = sb.table("logs")
+'''
+FIELDS
+created_at (aka time of log)
+command
+result
+advice
+'''
+
 # ========= log types =========
 
 # positive logs
@@ -58,6 +78,7 @@ class Task:
         # parsing output
         for i,e in enumerate(d):
             d[i] = e.decode("utf-8")
+
         # checking pass condition
         for i in d:
             if condition in i:
@@ -77,6 +98,9 @@ class Task:
         else:
             mlog(clog(self.name, f"finished on time"))
 
+        updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
+
+
 # update schedule
 # i is interval
 # r is id to update
@@ -87,7 +111,6 @@ def updateschedule(i, r):
     # json decode means server is up
     except json.decoder.JSONDecodeError:
         plog(clog(getdata(s, "name", "id", r), f"added {i} minutes to schedule"))
-        plog(clog(getdata(s, "name", "id", r), "updated schedule"))
         sleep(0.5)
     except Exception as e:
         nlog(f"an error occured: {e}")
@@ -101,13 +124,16 @@ def fetch(table, selector):
 def getdata(table, selector, what, where):
     return json.loads(table.select(selector).eq(what, where).execute().json())["data"][0][selector]
 
+def gettimes():
+    times = fetch(s, "scheduled_time")
+    return times
+
 # thread 1 - first two commands
 def t1(scope):
     print(scope)
     for f in range(len(scope)):
         task = Task(getdata(s, "name", "command", scope[f]), getdata(s, "expected_elapsed", "command", scope[f]))
         task.run(scope[f], getdata(s, "pass_condition", "command", scope[f]))
-        updateschedule(int(getdata(s, "interval", "command", scope[f])), int(getdata(s, "id", "command", scope[f])))
 
 # main
 def main():
