@@ -118,8 +118,9 @@ def main():
     for i in commands:
         tasks.append(i["command"])
     taskssplit = []
-    for i in range(0, len(tasks), 2):
-        taskssplit.append(tasks[i:(i+2)])
+    split = 2
+    for i in range(0, len(tasks), split):
+        taskssplit.append(tasks[i:(i+split)])
     
     # start threads
     threads = []
