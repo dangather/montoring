@@ -76,7 +76,7 @@ def t1():
     scope = tasks if len(tasks) <= 2 else tasks[:2]
     for f in range(len(scope)):
         task = Task(getdata("name", "command", scope[f]), getdata("expected_elapsed", "command", scope[f]))
-        task.run(getdata("command", "command", scope[f]), getdata("pass_condition", "command", scope[f]))
+        task.run(scope[f], getdata("pass_condition", "command", scope[f]))
         updateschedule(int(getdata("interval", "command", scope[f])), f)
   
 def main():
