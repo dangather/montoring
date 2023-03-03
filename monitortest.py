@@ -92,8 +92,10 @@ class Task:
         # log output
         if flag:
             plog(clog(self.name, f"success operation finished in {elapsed}s"))
+            success = True
         else:
             nlog(clog(self.name, f"failure: {d}, operation finished in {elapsed}s"))
+            success = False
         if elapsed < ee:
             plog(clog(self.name, f"finished {ee-elapsed}s earlier than expected"))
         elif elapsed > ee:
@@ -102,7 +104,8 @@ class Task:
             mlog(clog(self.name, f"finished on time"))
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
-
+        msg = "success" if success else "failure"
+        log(command, msg, "none")
 
 # update schedule
 # i is interval
@@ -138,7 +141,7 @@ def t1(scope):
 
 def threadrun(scope):
     try:
-        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=30), "%H:%M:%S"))}).eq("command", scope).execute()
+        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=15), "%H:%M:%S"))}).eq("command", scope).execute()
     except json.decoder.JSONDecodeError:
         time = getdata(s, "scheduled_time", "command", scope)
         while True:
@@ -163,6 +166,12 @@ def getcommands():
     for i in range(0, len(tasks), split):
         taskssplit.append(tasks[i:(i+split)])
     return taskssplit
+
+def log(command, result, advice):
+    try:
+        l.insert({"command": command, "result": result, "advice": advice}).execute()
+    except json.decoder.JSONDecodeError:
+        pass
 
 # main
 def main():
