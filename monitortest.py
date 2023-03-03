@@ -101,24 +101,12 @@ def getdata(selector, what, where):
     return json.loads(s.select(selector).eq(what, where).execute().json())["data"][0][selector]
 
 # thread 1 - first two commands
-def t1():
-    scope = tasks if len(tasks) <= 2 else tasks[:2]
+def t1(scope):
+    print(scope)
     for f in range(len(scope)):
         task = Task(getdata("name", "command", scope[f]), getdata("expected_elapsed", "command", scope[f]))
         task.run(scope[f], getdata("pass_condition", "command", scope[f]))
         updateschedule(int(getdata("interval", "command", scope[f])), f)
-
-# thread 2 - next two commands
-def t2():
-    canrun = True if len(tasks) > 2 else False
-    if canrun:
-        scope = tasks[2:4]
-        for f in range(len(scope)):
-            task = Task(getdata("name", "command", scope[f]), getdata("expected_elapsed", "command", scope[f]))
-            task.run(scope[f], getdata("pass_condition", "command", scope[f]))
-            updateschedule(int(getdata("interval", "command", scope[f])), int(getdata("id", "command", scope[f])))
-    else:
-        mlog("not enough tasks for thread 2 to run.")
 
 # main
 def main():
@@ -128,14 +116,18 @@ def main():
     tasks = []
     for i in commands:
         tasks.append(i["command"])
+    taskssplit = []
+    for i in range(0, len(tasks), 2):
+        taskssplit.append(tasks[i:(i+2)])
     
     # start threads
     threads = []
-    
-    for i in range(2):
-        thread = Thread(target=t1)
+
+    for i in range(len(taskssplit)):
+        thread = Thread(target=t1, args=[taskssplit[i]])
         threads.append(thread)
-    print(threads)    
+    for i in threads:
+        i.start()
 
 if __name__ == "__main__":
     main()
