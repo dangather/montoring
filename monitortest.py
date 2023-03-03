@@ -82,6 +82,7 @@ class Task:
 # r is id to update
 def updateschedule(i, r):
     try:
+        plog(clog(getdata("name", "id", r), "currently updating schedule"))
         sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(minutes=i), "%H:%M:%S"))}).eq("id", r).execute()
     # json decode means server is up
     except json.decoder.JSONDecodeError:
@@ -106,7 +107,7 @@ def t1(scope):
     for f in range(len(scope)):
         task = Task(getdata("name", "command", scope[f]), getdata("expected_elapsed", "command", scope[f]))
         task.run(scope[f], getdata("pass_condition", "command", scope[f]))
-        updateschedule(int(getdata("interval", "command", scope[f])), f)
+        updateschedule(int(getdata("interval", "command", scope[f])), int(getdata("id", "command", scope[f])))
 
 # main
 def main():
@@ -126,6 +127,7 @@ def main():
     for i in range(len(taskssplit)):
         thread = Thread(target=t1, args=[taskssplit[i]])
         threads.append(thread)
+    print(threads)
     for i in threads:
         i.start()
 
