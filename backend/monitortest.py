@@ -105,7 +105,7 @@ class Task:
             mlog(clog(self.name, f"finished on time"))
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
-        msg = "success" if random.randrange(1,11) > 5 else "failure"
+        msg = "success" if random.randrange(100) > 49 else "failure"
         name = getdata(s, "name", "command", command)
         log(name, msg, "none")
 
