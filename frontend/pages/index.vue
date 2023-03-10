@@ -4,8 +4,12 @@
     </div>
 </template>
 
-<script setup>
-const data = 234;
+<script setup lang="ts">
+function getdata(){
+    const sb = useSupabaseClient();
+    return sb;
+}
+const data = getdata();
 </script>
 
 <style lang="">
