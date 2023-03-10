@@ -173,6 +173,8 @@ def log(command, result, advice):
     except json.decoder.JSONDecodeError:
         pass
 
+# TODO optimize these threads
+
 # main
 def main():
     try:
