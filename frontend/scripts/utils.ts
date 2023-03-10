@@ -11,9 +11,9 @@ export async function getdata(query: string, where: string, what: string) {
     return data["data"]![0][query];
 }
 
-export async function fetch(query: string) {
-    const l = await connect().from("logs");
+export async function datafetch(query: string) {
+    const l = await connect().from("schedule");
     let data = await l.select(query);
-    return data
+    return data["data"]
 
 }
