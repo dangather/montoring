@@ -1,17 +1,13 @@
 <template>
-    <div class="text-center">
-        {{ data }}
+    <div class="text-center pt-5">
+        {{ names }}
     </div>
 </template>
 
 <script setup lang="ts">
-function getdata(){
-    const sb = useSupabaseClient();
-    return sb;
-}
-const data = getdata();
-</script>
+import {getdata, fetch} from "../scripts/utils"
+let names = fetch("name")
+// @ts-ignore
 
-<style lang="">
-    
-</style>
+
+</script>

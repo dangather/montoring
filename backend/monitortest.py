@@ -105,7 +105,8 @@ class Task:
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
         msg = "success" if success else "failure"
-        log(command, msg, "none")
+        name = getdata(s, "name", "command", command)
+        log(name, msg, "none")
 
 # update schedule
 # i is interval
@@ -167,9 +168,9 @@ def getcommands():
         taskssplit.append(tasks[i:(i+split)])
     return taskssplit
 
-def log(command, result, advice):
+def log(name, result, advice):
     try:
-        l.insert({"command": command, "result": result, "advice": advice}).execute()
+        l.insert({"name": name, "result": result, "advice": advice}).execute()
     except json.decoder.JSONDecodeError:
         pass
 
