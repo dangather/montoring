@@ -8,6 +8,7 @@ import subprocess as sp
 from supabase import create_client
 from datetime import datetime, timedelta
 from colorama import init, Fore, Back, Style
+import random
 
 init()
 
@@ -104,7 +105,7 @@ class Task:
             mlog(clog(self.name, f"finished on time"))
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
-        msg = "success" if success else "failure"
+        msg = "success" if random.randrange(1,11) > 5 else "failure"
         name = getdata(s, "name", "command", command)
         log(name, msg, "none")
 
@@ -142,7 +143,7 @@ def t1(scope):
 
 def threadrun(scope):
     try:
-        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=15), "%H:%M:%S"))}).eq("command", scope).execute()
+        sb.table("schedule").update({"scheduled_time": str(datetime.strftime(datetime.now() + timedelta(seconds=5), "%H:%M:%S"))}).eq("command", scope).execute()
     except json.decoder.JSONDecodeError:
         time = getdata(s, "scheduled_time", "command", scope)
         while True:
