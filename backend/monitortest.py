@@ -90,7 +90,7 @@ class Task:
                 break
             else:
                 flag = False
-        # log output
+        # log output    
         if flag:
             plog(clog(self.name, f"success operation finished in {elapsed}s"))
             update("schedule", "result", "success", "name", self.name)
