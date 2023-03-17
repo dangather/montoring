@@ -1,10 +1,14 @@
 <template>
-    <div class="pt-5 block text-center">
-        <div id="data" v-for="i, k in final" :key="k">
-            <div v-if="data != null">
-                <p>{{ i.name }}</p> <p>{{  i.value }}</p>
+    <div class="lg:grid lg:grid-cols-3 md:grid-cols-1 transition-all duration-200 ease-in-out lg:gap-5 m-5 min-h-screen">
+        <div v-for="i, k in final" :key="k">
+            <div class="bg-gray-200 text-center rounded-xl h-full border-4" :class="i.value == 'success' ?  'border-green-500' : ' border-red-500'">
+                <p class="text-xl py-5 font-bold">
+                    {{ i.name }}
+                </p>
+                <p class="text-8xl pt-28 ">
+                    {{ i.value }}
+                </p>         
             </div>
-            <div v-else>no data sorry!</div>
         </div>
     </div>
 </template>
