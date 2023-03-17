@@ -1,6 +1,7 @@
 <template>
-<div class="main">
-    <cards/>
+<div id="main">
+    <component :is="i == 0 ? c : ''"/>
+    <component :is="i == 1 ? h : ''"/>
 </div>
 </template>
 
@@ -8,16 +9,22 @@
 import cards from '~~/components/cards.vue';
 import hello from "~~/components/hello.vue";
 let comps: any = []
+let c = resolveComponent("cards")
+let h = resolveComponent("hello")
 comps.push(cards, hello)
-let main = document.getElementById
-let i = 0
+
+
+
+let i = ref(0)
 setInterval(() =>  {
-    console.log(comps[i])
-    i++
-    if (i >= comps.length) {
-        i = 0
+    i.value++
+    console.log(i.value)
+    if (i.value >= comps.length) {
+        i.value = 0
     }    
 }, 5000)
+
+
 
 
 </script>

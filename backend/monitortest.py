@@ -90,7 +90,8 @@ class Task:
                 break
             else:
                 flag = False
-        # log output    
+        # log output
+        # flag = not flag if random.randint(1, 10) > 5 else flag
         if flag:
             plog(clog(self.name, f"success operation finished in {elapsed}s"))
             update("schedule", "result", "success", "name", self.name)

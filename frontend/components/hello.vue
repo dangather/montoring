@@ -1,7 +1,7 @@
 <template>
 
     <div class="text-center text-3xl">
-        hello world
+        zendesk tickets: 0
     </div>
 
 
