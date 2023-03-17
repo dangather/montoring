@@ -16,6 +16,7 @@
     "tailwindcss": "^3.2.7"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.10.0"
+    "@supabase/supabase-js": "^2.10.0",
+    "node-zendesk": "^2.2.0"
   }
 }
