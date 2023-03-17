@@ -93,9 +93,12 @@ class Task:
         # log output
         if flag:
             plog(clog(self.name, f"success operation finished in {elapsed}s"))
+            update("schedule", "result", "success", "name", self.name)
             success = True
         else:
             nlog(clog(self.name, f"failure: {d}, operation finished in {elapsed}s"))
+            update("schedule", "result", "failure", "name", self.name)
+            log(self.name, "failure", "none")
             success = False
         if elapsed < ee:
             plog(clog(self.name, f"finished {ee-elapsed}s earlier than expected"))
@@ -105,10 +108,17 @@ class Task:
             mlog(clog(self.name, f"finished on time"))
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
-        #msg = "success" if flag else "failure"
-        msg = random.choice(["success", "failure"])
-        name = getdata(s, "name", "command", command)
-        log(name, msg, "none")
+
+
+
+
+def update(table, selector, query, where, what):
+    try:
+        sb.table(table).update({selector: str(query)}).eq(where, what).execute()
+    except json.decoder.JSONDecodeError:
+        plog(clog(getdata(s, "name", where, what), f"updated {selector} with query {query} on {table} where {where} is {what}"))
+    except Exception as e:
+        nlog(f"an error occured: {e}")   
 
 # update schedule
 # i is interval
@@ -123,6 +133,7 @@ def updateschedule(i, r):
         sleep(0.5)
     except Exception as e:
         nlog(f"an error occured: {e}")
+
 
 # get general data
 def fetch(table, selector):
