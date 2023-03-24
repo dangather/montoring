@@ -11,11 +11,15 @@
     "@nuxtjs/supabase": "^0.3.1",
     "@nuxtjs/tailwindcss": "^6.4.1",
     "autoprefixer": "^10.4.14",
+    "eslint": "^8.36.0",
+    "eslint-plugin-vue": "^9.10.0",
     "nuxt": "^3.2.3",
+    "nuxt-icon": "^0.3.3",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7"
   },
   "dependencies": {
+    "@iconify/vue": "^4.1.0",
     "@supabase/supabase-js": "^2.10.0",
     "node-zendesk": "^2.2.0"
   }

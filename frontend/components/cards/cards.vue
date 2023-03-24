@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import {getdata, datafetch, connect} from "../scripts/utils";
+import {getdata, datafetch, connect} from "../../scripts/utils";
 const sb = connect();
 let items: any = []
 let data = await datafetch("name")
