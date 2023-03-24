@@ -16,20 +16,36 @@ const labels = [
     "may",
     "june",
     "july",
-    "august"
+    "august",
+    "25",
+    ",W5353","EWRWR",",EF"
 ]
 const data = {
   labels: labels,
   datasets: [{
     label: 'cool label',
-    data: [354,3535,5,52,2521,25,24],
+    data: [354,3535,5,52,2521,6,525,36,25,36,25,255],
     borderColor: 'rgb(23, 194, 4)',
+  }]
+
+};const data1 = {
+  labels: labels,
+  datasets: [{
+    label: 'cool label',
+    data: [743,64,4,747,46,6,463,63,23,63,633,6],
+    borderColor: 'rgb(227, 5, 5)',
   }]
 };
 
 const config = {
   type: 'line',
   data: data,
+  options: {}
+};
+
+const config1 = {
+  type: 'line',
+  data: data1,
   options: {}
 };
 
@@ -40,7 +56,7 @@ onMounted(() => {
         )    
     const chart1 = new Chart(
         document.getElementById("chart2"),
-        config
+        config1
         )
 })
 
