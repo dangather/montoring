@@ -14,12 +14,13 @@ let z = resolveComponent("zendesk")
 comps.push(zendesk, cards)
 
 let i = ref(0)
+const time = 10 * 1000
 setInterval(() =>  {
     i.value++
     if (i.value >= comps.length) {
         i.value = 0
     }    
-}, 5000) 
+}, time) 
 
 
 </script>

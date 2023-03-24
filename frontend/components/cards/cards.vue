@@ -2,7 +2,7 @@
     <titlebar>Service checks</titlebar>
     <div class="grid grid-cols-2 transition-all duration-200 ease-in-out gap-5 m-5 mt-20 h-[75vh]">
         <div v-for="i, k in final" :key="k">
-            <div class="bg-gray-200 text-center mt-50 rounded-xl h-full border-4" :class="i.value == 'success' ?  'border-green-500' : ' border-red-500'">
+            <div class="bg-gray-200 shadow-md text-center mt-50 rounded-xl h-full border-4" :class="i.value == 'success' ?  'border-green-500' : ' border-red-500'">
                 <p class="text-3xl pt-10 font-bold">
                     {{ i.name }}
                 </p>
