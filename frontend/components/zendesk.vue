@@ -1,7 +1,7 @@
 <template>
-    <div class="p-5 text-center shadow text-5xl">
-        Zendesk Tickets
-    </div>
+    <titlebar>
+        Zendesk tickets
+    </titlebar>
 
     <div class="flex justify-center ">
         <zcards title="Open tickets" colour="green" border="8px solid green"> 
@@ -20,5 +20,6 @@
 <script setup>
 import zcards from "/components/cards/zcards.vue"
 import {Icon} from '@iconify/vue'
+import titlebar from "./titlebar.vue"
 
 </script>
