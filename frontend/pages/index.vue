@@ -19,9 +19,7 @@ setInterval(() =>  {
     if (i.value >= comps.length) {
         i.value = 0
     }    
-}, 5000)
-
-
+}, 5000) 
 
 
 </script>

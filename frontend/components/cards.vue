@@ -5,7 +5,7 @@
                 <p class="text-3xl pt-10 font-bold">
                     {{ i.name }}
                 </p>
-                <p class="text-8xl pt-52 ">
+                <p class="grid h-[70%] text-7xl place-items-center">
                     {{ i.value }}
                 </p>         
             </div>
