@@ -5,9 +5,8 @@
     </div>
     </template>
 <script setup lang="ts">
-import Chart from "chart.js/auto"
+import Chart, { ChartConfiguration } from "chart.js/auto"
 import {getdata, datafetch, connect} from "../scripts/utils"
-
 const labels = [
     "january",
     "february",
@@ -32,7 +31,7 @@ const data = {
   labels: labels,
   datasets: [{
     label: 'cool label',
-    data: [743,64,4,747,46,6,463,63,23,63,633,6],
+    data: [743,64,4,747,46,6,463,6353,23,63,633,6],
     borderColor: 'rgb(227, 5, 5)',
   }]
 };
@@ -51,13 +50,13 @@ const config1 = {
 
 onMounted(() => {
     const chart = new Chart(
-        document.getElementById("chart"),
-        config
+        document.getElementById("chart")! as HTMLCanvasElement,
+        config as ChartConfiguration
         )    
     const chart1 = new Chart(
-        document.getElementById("chart2"),
-        config1
+        document.getElementById("chart2")! as HTMLCanvasElement,
+        config1 as ChartConfiguration
         )
-})
+}) 
 
 </script> 

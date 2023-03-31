@@ -1,5 +1,5 @@
 <template>
-    <div class="border max-w-[75%] shadow-md m-5 w-fit px-10 rounded-xl pb-5" :style="borderl">
+    <div class="border max-w-[75%] shadow-md m-5 my-10 w-fit px-10 rounded-xl pb-5" :style="borderl">
         <div class="text-5xl py-3" :style="styleObject">{{ props.title }}</div>
         <div class="text-5xl">
             <p><slot/></p>
@@ -21,5 +21,4 @@ const styleObject = ref({
 const borderl = ref({
     borderLeft: props.border
 })
-
 </script>

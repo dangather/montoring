@@ -16,3 +16,5 @@ export async function datafetch(query: string) {
     let data = await l.select(query).order("id", {ascending:false});
     return data["data"]
 }
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
