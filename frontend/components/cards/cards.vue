@@ -7,7 +7,7 @@
                     {{ i.name }}
                 </p>
                 <p class="grid h-[50%] text-7xl place-items-center">
-                    {{ i.value }}
+                    {{ i.value == "success" ? "success" : "failure" }}
                 </p>         
             </div>
             <graphs/>
@@ -21,7 +21,7 @@ import {getdata, datafetch, connect} from "../../scripts/utils";
 import graphs from "../graphs.vue";
 const sb = connect();
 let items: any = []
-let data = await datafetch("name")
+let data = await datafetch("schedule", "name")
 let names: any[] = []
 let res: any[] = []
 let final: any = ref([])
@@ -31,13 +31,13 @@ for(let i = 0; i < data!.length; i++) {
     //@ts-ignore
     names.push(data![i]["name"])
 
-    res.push(await getdata("result", "name", names[i]))
+    res.push(await getdata("schedule", "result", "name", names[i]))
   
     final.value.push({name: names[i], value: res[i]})
 } 
 
 sb.channel("any").on("postgres_changes", {event: "INSERT", schema: "public", table: "logs"}, async () => {
-    let data = await datafetch("name")
+    let data = await datafetch("schedule", "name")
     let names: any[] = []
     let items: any[] = []
     let res: any[] = []
@@ -45,7 +45,7 @@ sb.channel("any").on("postgres_changes", {event: "INSERT", schema: "public", tab
     for(let i = 0; i < data!.length; i++) {
         //@ts-ignore
         names.push(data![i]["name"])
-        res.push(await getdata("result", "name", names[i]))
+        res.push(await getdata("schedule", "result", "name", names[i]))
         items.push({name: names[i], value: res[i]})
     }
     console.log(names,res,items)

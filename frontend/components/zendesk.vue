@@ -7,10 +7,10 @@
         <zcards title="Open tickets" colour="green" border="8px solid green"> 
             131
         </zcards>
-        <zcards  title="Unassigned" colour="grey" border="8px solid grey"> 
+        <zcards title="Unassigned" colour="grey" border="8px solid grey"> 
             14
         </zcards>    
-        <zcards  title="Unsatisfied clients" colour="red" border="8px solid red"> 
+        <zcards title="Unsatisfied clients" colour="red" border="8px solid red"> 
             242423235
         </zcards>    
    
@@ -37,5 +37,9 @@
 <script setup lang="ts">
 import zcards from "/components/cards/zcards.vue"
 import titlebar from "./titlebar.vue"
+import {getdata, datafetch} from "../scripts/utils"
 import outage from "./cards/outage.vue"
+
+const data = await datafetch("logs", "name");
+//console.log("data is " + data)
 </script>

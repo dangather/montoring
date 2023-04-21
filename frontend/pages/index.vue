@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <keep-alive>
-            <component :is="i == 1 ? card : zend"/>
+            <component :is="i == 0? card : zend"/>
         </keep-alive>
     </div>
 </template>
@@ -14,16 +14,21 @@ const card = resolveComponent("cards")
 const zend = resolveComponent("zendesk")
 comps.push(card, zend)
 
-let i = ref(0)
-
+const i = ref(0)
+let interval: any = null
 const time = 2
 
-
-setInterval(() =>  {
+onMounted(() => {
+  interval = setInterval(() =>  {
     i.value++
     if (i.value >= comps.length) {
         i.value = 0
     }
-    console.log(i.value)
-}, time * 1000) 
+    console.log("i is " + i.value)
+  }, time * 1000) 
+})
+
+onBeforeUnmount(() => {
+  clearInterval(interval)
+}) 
 </script>
