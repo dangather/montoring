@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <keep-alive>
-            <component :is="i == 0? card : zend"/>
+            <component :is="i == 1? card : zend"/>
         </keep-alive>
     </div>
 </template>
@@ -18,7 +18,7 @@ const i = ref(0)
 let interval: any = null
 const time = 2
 
-onMounted(() => {
+/* onMounted(() => {
   interval = setInterval(() =>  {
     i.value++
     if (i.value >= comps.length) {
@@ -30,5 +30,5 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearInterval(interval)
-}) 
+})  */
 </script>
