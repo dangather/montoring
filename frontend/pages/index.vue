@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <keep-alive>
-            <component :is="i == 1? card : zend"/>
+            <component :is="bool?zend:card"/>
         </keep-alive>
     </div>
 </template>
@@ -17,18 +17,22 @@ comps.push(card, zend)
 const i = ref(0)
 let interval: any = null
 const time = 2
-
-/* onMounted(() => {
+let bool = ref(true)
+onMounted(() => {
   interval = setInterval(() =>  {
     i.value++
     if (i.value >= comps.length) {
-        i.value = 0
+      i.value = 0
     }
-    console.log("i is " + i.value)
+    if (i.value == 1) {
+      bool.value = false
+    } else {
+      bool.value = true
+      }
   }, time * 1000) 
 })
 
 onBeforeUnmount(() => {
   clearInterval(interval)
-})  */
+})  
 </script>
