@@ -22,6 +22,7 @@
     "@iconify/vue": "^4.1.0",
     "@supabase/supabase-js": "^2.10.0",
     "chart.js": "^4.2.1",
-    "node-zendesk": "^2.2.0"
+    "node-zendesk": "^2.2.0",
+    "xml2js": "^0.5.0"
   }
 }

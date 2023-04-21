@@ -110,9 +110,6 @@ class Task:
 
         updateschedule(int(getdata(s, "interval", "command", command)), int(getdata(s, "id", "command", command)))
 
-
-
-
 def update(table, selector, query, where, what):
     try:
         sb.table(table).update({selector: str(query)}).eq(where, what).execute()

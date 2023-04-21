@@ -13,6 +13,7 @@ def main():
         for i in range(len(taskssplit)):
             thread = Thread(target=t1, args=[taskssplit[i]])
             threads.append(thread)
+            taskssplit = getcommands()
         for i in threads:
             i.start()
         mlog("monitoring...")

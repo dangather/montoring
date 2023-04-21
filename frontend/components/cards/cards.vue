@@ -36,6 +36,7 @@ for(let i = 0; i < data!.length; i++) {
     final.value.push({name: names[i], value: res[i]})
 } 
 
+  
 sb.channel("any").on("postgres_changes", {event: "INSERT", schema: "public", table: "logs"}, async () => {
     let data = await datafetch("schedule", "name")
     let names: any[] = []
@@ -45,8 +46,8 @@ sb.channel("any").on("postgres_changes", {event: "INSERT", schema: "public", tab
     for(let i = 0; i < data!.length; i++) {
         //@ts-ignore
         names.push(data![i]["name"])
-        res.push(await getdata("schedule", "result", "name", names[i]))
-        items.push({name: names[i], value: res[i]})
+    res.push(await getdata("schedule", "result", "name", names[i]))
+    items.push({name: names[i], value: res[i]})
     }
     console.log(names,res,items)
     final.value = []
@@ -54,5 +55,6 @@ sb.channel("any").on("postgres_changes", {event: "INSERT", schema: "public", tab
     console.log(final.value)
 
 }).subscribe()
+
 
 </script>
