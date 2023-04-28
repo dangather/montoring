@@ -39,8 +39,7 @@ const data = {
 const config = {
   type: 'line',
   data: data,
-  options: {}
-};
+}
 
 const config1 = {
   type: 'line',
@@ -52,12 +51,13 @@ onMounted(() => {
     const chart = new Chart(
         document.getElementById("chart")! as HTMLCanvasElement,
         config as ChartConfiguration
-        )
+      )
     const chart1 = new Chart(
         document.getElementById("chart2")! as HTMLCanvasElement,
         config1 as ChartConfiguration
-        )
+      )
 }) 
+
 onBeforeUnmount(() => {
 
 })
